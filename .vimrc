@@ -60,14 +60,16 @@ call vundle#rc()
  if ($TERM == "vt100")
     " xterm-color / screen
     set t_Co=8
-    set t_AF=^[[1;3%p1%dm
-    set t_AB=^[[4%p1%dm
+    set t_AF=[1;3%p1%dm
+    set t_AB=[4%p1%dm
  endif
 
  if ($TERM == 'screen')
-    exe "set title titlestring=" . hostname() . ":vim(%f)"
-    exe "set title t_ts=\<ESC>k t_fs=\<ESC>\\"
+    "exe "set title titlestring=" . hostname() . ":vim(%f)"
+    "exe "set title t_ts=\<ESC>k t_fs=\<ESC>\\"
+    autocmd BufEnter * exec ":silent !echo -e '\033kvim(%)\033\\'\<CR>"
  endif
+
  let &titleold=hostname() . ":" . getcwd()
  
  if !has('win32') && !has('win64')
