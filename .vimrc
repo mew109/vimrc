@@ -1,207 +1,171 @@
-filetype off                   " required!
-" if you have no Vundle, please setup it first:
-"  git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
+" Load vim-plug
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent execute "!echo vim-plug not detected, downloading vim-plug..."
+  silent execute "!sleep 2"
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
 
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
-" let Vundle manage Vundle
-" required!
- Bundle 'gmarik/vundle'
+"vim: ts=4 sw=4
+" Download vim-plug:
+"curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+call plug#begin('~/.vim/plugged')
+Plug 'ctrlpvim/ctrlp.vim'
 
-" original repos on github
- Bundle 'Lokaltog/vim-easymotion'
- Bundle 'scrooloose/nerdtree'
- Bundle 'majutsushi/tagbar'
- Bundle 'Raimondi/delimitMate.git'
- Bundle 'godlygeek/tabular'
- Bundle 'Shougo/neocomplcache'
- Bundle 'vim-scripts/DoxygenToolkit.vim'
- Bundle 'salsifis/vim-transpose'
- Bundle 'tyru/fencview.vim'
- Bundle 'c9s/cpan.vim'
- Bundle 'c9s/perlomni.vim'
- Bundle 'vim-scripts/buffergrep'
+Plug 'scrooloose/nerdtree', { 'on':  ['NERDTreeTabsToggle', 'NERDTreeTabsOpen', 'NERDTreeToggle'] }
 
- Bundle 'MarcWeber/vim-addon-mw-utils'
- Bundle 'tomtom/tlib_vim'
- Bundle 'honza/snipmate-snippets'
- Bundle 'garbas/vim-snipmate'
-" vim-scripts repos
- Bundle 'a.vim'
- Bundle 'Align'
- Bundle 'bufexplorer.zip'
- Bundle 'EnhCommentify.vim'
- Bundle 'FencView.vim'
- Bundle 'mru.vim'
- Bundle 'matchit.zip'
- Bundle 'python_match.vim'
- Bundle 'OmniCppComplete'
- Bundle 'SearchComplete'
- Bundle 'CRefVim'
- Bundle 'stlrefvim'
+Plug 'jistr/vim-nerdtree-tabs', { 'on': ['NERDTreeTabsToggle', 'NERDTreeTabsOpen', 'NERDTreeToggle'] }
 
- Bundle 'surround.vim'
- Bundle 'repeat.vim'
+Plug 'majutsushi/tagbar'
 
- Bundle 'L9'
- Bundle 'FuzzyFinder'
- filetype plugin indent on     " required!
- " Brief help for Vundle
- " :BundleList          - list configured bundles
- " :BundleInstall(!)    - install(update) bundles
- " :BundleSearch(!) foo - search(or refresh cache first) for foo
- " :BundleClean(!)      - confirm(or auto-approve) removal of unused bundles
- "
- " see :h vundle for more details or wiki for FAQ
- " NOTE: comments after Bundle command are not allowed..
+Plug 'ciaranm/detectindent'
 
- syntax on
- 
- if ($TERM == "vt100")
-    " xterm-color / screen
-    set t_Co=8
-    set t_AF=[1;3%p1%dm
-    set t_AB=[4%p1%dm
- endif
+Plug 'hynek/vim-python-pep8-indent'
 
- if ($TERM == 'screen')
-    "exe "set title titlestring=" . hostname() . ":vim(%f)"
-    "exe "set title t_ts=\<ESC>k t_fs=\<ESC>\\"
-    autocmd BufEnter * exec ":silent !echo -e '\033kvim(%)\033\\'\<CR>"
- endif
+"Plug 'millermedeiros/vim-statline'
+Plug 'itchyny/lightline.vim'
 
- let &titleold=hostname() . ":" . getcwd()
- 
- if !has('win32') && !has('win64')
-    set term=$TERM       " Make arrow and other keys work
- endif
- 
- if filereadable($VIMRUNTIME . "/vimrc_example.vim")
-    so $VIMRUNTIME/vimrc_example.vim
- endif
- 
- set nocompatible
- set wildmenu
- set backupdir=~/tmp,.,/var/tmp/vi.recover,/tmp
- set directory=~/tmp,/var/tmp/vi.recover,/tmp,.
- set backup      " keep a backup file
- 
- set linebreak
- set list
- set listchars=tab:>-,trail:-
- 
- set cmdheight=2
- 
- set number
- set tabstop=4
- set softtabstop=4
- set shiftwidth=4
- set expandtab
- set smarttab
- set backspace=indent,eol,start
+Plug 'vim-scripts/LargeFile'
 
- set fencs=utf-8,ucs-bom,big5,shift-jis,gb18030
- set tabpagemax=8
- set showtabline=2 "always show tabline
- set tags+=~/tags
- set foldmethod=manual
+Plug 'easymotion/vim-easymotion'
 
- highlight SpecialKey ctermfg=DarkGray guifg=#404040
- highlight LineNr     cterm=bold ctermfg=Brown ctermbg=Black guibg=Darkgrey
- highlight Comment      term=bold ctermfg=Darkcyan
- "for neocomplcache
- highlight PmenuSel ctermbg=Red guifg=#dddd00 guibg=#1f82cd 
+Plug 'fatih/vim-go'
 
- if has("win32") || has("win64")
-    colorscheme desert
-    set guifont=Consolas:h12, MingLiu:h12
- else
-    set guifont=Courier\ 12
- endif
+Plug 'nvie/vim-flake8'
 
-"hotkeys
- nnoremap <F7>  :if exists("syntax_on") <BAR>
-    \   syntax off <BAR><CR>
-    \ else <BAR>
-    \   syntax enable <BAR>
-    \ endif <CR>
- inoremap <silent> <F8>  <C-O>:TagbarToggle<CR>
- nnoremap <silent> <F8>  :TagbarToggle<CR>
- nnoremap <F11> :%!xxd<CR>
- nnoremap <F12> :%!xxd -r<CR>
+Plug 'w0rp/ale'
 
- "key-mappings for neocomplcache
- inoremap <expr><C-g>     neocomplcache#undo_completion()
- inoremap <expr><C-l>     neocomplcache#complete_common_string()
- " <CR>: close popup and save indent.
- inoremap <expr><CR>  pumvisible() ? "\<C-y>" : "\<CR>"
- " <TAB>: completion. (conflicts with snipmate)
- "inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
- " <C-h>, <BS>: cancel popup and delete backword char.
- inoremap <expr><C-h> neocomplcache#cancel_popup()."\<C-h>"
- inoremap <expr><BS> neocomplcache#cancel_popup()."\<C-h>"
- inoremap <expr><C-y>  neocomplcache#smart_close_popup()
- inoremap <expr><C-e>  neocomplcache#cancel_popup()
- inoremap <expr><Left>  neocomplcache#cancel_popup()."\<Left>"
- inoremap <expr><Right>  neocomplcache#smart_close_popup()."\<Right>"
- inoremap <expr><Up>    pumvisible() ? "\<Up>" : neocomplcache#cancel_popup()."\<Up>"
- inoremap <expr><Down>  pumvisible() ? "\<Down>" : neocomplcache#cancel_popup()."\<Down>"
+Plug 'maralla/completor.vim'
+call plug#end()
 
- "hotkeys followed by <Leader>
- let mapleader = ","
- nnoremap <silent> <Leader>t :TagbarToggle<CR>
- nnoremap <silent> <Leader>n :NERDTreeToggle<CR>
- nnoremap <silent> <Leader><Leader> :NeoComplCacheToggle<CR>
- nnoremap <Leader>p :set invpaste paste?<CR>
- nnoremap <Leader>ff :FufFile<CR>
- nnoremap <Leader>ft :FufTag<CR>
- nnoremap <Leader>dd :Dox<CR>
- nnoremap <Leader>da :DoxAuthor<CR>
- nnoremap <silent> <Leader>l :set invnumber invlist list?<CR>
- nnoremap <silent> <Leader>fe :FencView<CR>
- "<Leader>tr: go to STL documentation 
- "<Leader>cr: go to C documentation 
- "<Leader><Leader>e: easyMotion
- "<Leader>be: open bufexplorer
- "<Leader>Bgrep: search in buffers
- "<Leader>Tgrep: search in tabs
+if $TERM == 'xterm-256color' || $TERM == 'putty-256color' || $TERM == 'screen-256color'
+            \ || match($TERMCAP, 'Co#256:') == 0 || match($TERMCAP, ':Co#256:') > 0
+    set t_Co=256
+    set bg=dark
+endif
+set ts=4
+set sw=4
+set et
+set bg=dark
+set hls
+set number
 
- "correct typos
- cnoreabbrev Q q
- cnoreabbrev Wq wq
- cnoreabbrev neo NeoComplCacheToggle
- cnoreabbrev ncc NeoComplCacheToggle
+set list
+set listchars=tab:>-,trail:-
 
- "setting for tagbar
- let g:tagbar_width = 26
- let g:tagbar_iconchars = ['▾', '▸']
- let g:tagbar_autoshowtag = 1
- if executable("ptags.pl")
-     let g:tagbar_type_perl = {
-         \ 'ctagsbin' : "ptags.pl",
-         \ 'ctagsargs' : '-f -',
-         \ 'kinds' : [
-             \ 'p:packages:1:0',
-             \ 'c:constants:0:0',
-             \ 'f:formats:0:0',
-             \ 'l:labels',
-             \ 's:subroutines',
-             \ 'v:variables',
-         \ ],
-     \ }
- endif
+set laststatus=2
 
-"settings for neocomplcache
- " Do not use neocomplcache at startup
- let g:neocomplcache_enable_at_startup = 0
- " Use smartcase.
- let g:neocomplcache_enable_smart_case = 1
- " Use underbar completion.
- let g:neocomplcache_enable_underbar_completion = 1
- " Set minimum syntax keyword length.
- let g:neocomplcache_min_syntax_length = 3
- let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
- let g:neocomplcache_max_list = 20
- let g:neocomplcache_auto_completion_start_length = 2
- "let g:neocomplcache_disable_auto_complete = 1
- 
+" search tags
+set tags=./mytags,mytags; " set autochdir
+
+set showtabline=2 " always show tabs
+
+augroup vimrc
+    autocmd!
+    autocmd VimEnter * let &columns=&columns - 1  "avoid text overflow on some terminals
+    autocmd VimResized * let &columns=&columns - 1  "avoid text overflow on some terminals
+    autocmd BufReadPost * if exists(":DetectIndent") | exe ":DetectIndent" | endif
+augroup END
+
+function! ExtractVariable()
+    let name = inputdialog("name please: ")
+    if &filetype == 'perl'
+        let prefix = "my "
+    elseif &filetype == 'vim'
+        let prefix = "let "
+    elseif &filetype == 'javascript'
+        let prefix = "var "
+    elseif &filetype == 'lua'
+        let prefix = "local "
+    else
+        let prefix = ""
+    endif
+    if name != ""
+        if &filetype == 'go'
+            execute "normal O" . prefix . name . " := "
+        else
+            execute "normal O" . prefix . name . " = "
+        endif
+        normal p
+        execute (line('.')+1) . ",$s/" . escape(getreg('"'), '/\') . "/" . name . "/"
+    endif
+endfunction
+vnoremap <c-e> y:call ExtractVariable()<cr>
+
+"""Save fat finger errors
+command! -bang -nargs=? -complete=file Wq wq<bang> <args>
+command! -bang Q q<bang>
+
+"""some shortcuts
+let mapleader = ","
+nnoremap <silent> <Leader>p :set invpaste paste?<CR>i
+nnoremap <silent> <Leader>l :set invnumber invlist list?<CR>
+nnoremap <silent> <Leader>n :NERDTreeTabsToggle<CR>
+nnoremap <silent> <Leader>t :TagbarToggle<CR>
+inoremap <silent> <Leader>t <C-O>:TagbarToggle<CR>
+
+
+"""" Plugin-specific configurations
+
+""" Tagbar
+nmap <F8> :TagbarToggle<CR>
+let g:tagbar_iconchars = ['+', '-']
+let g:tagbar_indent = 1
+let g:tagbar_show_linenumbers = 1 " absolute line num
+let g:tagbar_autoshowtag = 1
+let g:tagbar_compact = 1 " no help msg
+
+"""ctrlp.vim
+" open file in new tab
+let g:ctrlp_prompt_mappings = {
+             \ 'AcceptSelection("e")': ['<c-r>', '<c-e>', '<2-LeftMouse>'],
+             \ 'AcceptSelection("t")': ['<cr>', '<c-t>'],
+             \ }
+let g:ctrlp_max_depth = 5
+let g:ctrlp_max_files = 5000
+let g:ctrlp_custom_ignore = {
+    \ 'dir':  '\v[\/]\.(git|hg|svn)$',
+    \ 'file': '\v\.(exe|so|dll|jpg|png|gif|docx?|pptx?|xlsx?|bin|pdf|pyc|class|swp)$',
+    \ }
+let g:ctrlp_user_command = {
+    \ 'types': {
+        \ 1: ['.git', 'cd %s && git ls-files -co --exclude-standard'],
+        \ 2: ['.hg', 'hg --cwd %s locate -I .'],
+        \ },
+    \ 'fallback': 'find %s -type f'
+    \ }
+
+"""EasyMotion
+let g:EasyMotion_do_mapping = 0 " Disable default mappings
+
+" Move to line
+map <Leader>L <Plug>(easymotion-bd-jk)
+nmap <Leader>L <Plug>(easymotion-overwin-line)
+
+" Move to word
+map <Leader>w <Plug>(easymotion-bd-w)
+nmap <Leader>w <Plug>(easymotion-overwin-w)
+
+" Move to end of word
+map <Leader>e <Plug>(easymotion-bd-e)
+
+"""NerdTree
+let g:nerdtree_tabs_focus_on_files = 1
+let g:nerdtree_tabs_autoclose = 1
+let g:NERDTreeWinSize = 26
+let g:NERDTreeDirArrowExpandable = '+'
+let g:NERDTreeDirArrowCollapsible = '*'
+" let g:NERDTreeMapOpenInTab='<ENTER>'
+
+let g:lightline = {
+      \ 'colorscheme': 'wombat',
+      \ }"
+
+"""vim-flake8
+let g:flake8_show_in_file=1
+
+"""completer.vim
+let g:completor_min_chars=2
+" map right arrow to enter
+inoremap <expr> <right> pumvisible() ? "<Enter>" : "<right>"
