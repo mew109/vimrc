@@ -11,7 +11,8 @@ endif
 " Download vim-plug:
 "curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 call plug#begin('~/.vim/plugged')
-Plug 'ctrlpvim/ctrlp.vim'
+" use fzf instead
+"Plug 'ctrlpvim/ctrlp.vim'
 
 Plug 'scrooloose/nerdtree', { 'on':  ['NERDTreeTabsToggle', 'NERDTreeTabsOpen', 'NERDTreeToggle'] }
 
@@ -30,13 +31,24 @@ Plug 'vim-scripts/LargeFile'
 
 Plug 'easymotion/vim-easymotion'
 
+" vim8 required
 Plug 'fatih/vim-go'
 
 Plug 'nvie/vim-flake8'
 
 Plug 'w0rp/ale'
 
-Plug 'maralla/completor.vim'
+" vim8 w/ python3 & lambda required
+"Plug 'maralla/completor.vim'
+
+Plug 'rust-lang/rust.vim'
+
+" for vim7
+"Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+" for vim8
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+
 call plug#end()
 
 if $TERM == 'xterm-256color' || $TERM == 'putty-256color' || $TERM == 'screen-256color'
@@ -100,7 +112,7 @@ command! -bang Q q<bang>
 """some shortcuts
 let mapleader = ","
 nnoremap <silent> <Leader>p :set invpaste paste?<CR>i
-nnoremap <silent> <Leader>l :set invnumber invlist list?<CR>
+nnoremap <silent> <Leader>l :set invnumber invlist list?<CR>:ALEToggle<CR>
 nnoremap <silent> <Leader>n :NERDTreeTabsToggle<CR>
 nnoremap <silent> <Leader>t :TagbarToggle<CR>
 inoremap <silent> <Leader>t <C-O>:TagbarToggle<CR>
@@ -123,9 +135,9 @@ let g:ctrlp_prompt_mappings = {
              \ 'AcceptSelection("t")': ['<cr>', '<c-t>'],
              \ }
 let g:ctrlp_max_depth = 5
-let g:ctrlp_max_files = 5000
+let g:ctrlp_max_files = 4000
 let g:ctrlp_custom_ignore = {
-    \ 'dir':  '\v[\/]\.(git|hg|svn)$',
+    \ 'dir':  '\v[\/]\.(git|hg|svn)|^bak$',
     \ 'file': '\v\.(exe|so|dll|jpg|png|gif|docx?|pptx?|xlsx?|bin|pdf|pyc|class|swp)$',
     \ }
 let g:ctrlp_user_command = {
@@ -135,6 +147,11 @@ let g:ctrlp_user_command = {
         \ },
     \ 'fallback': 'find %s -type f'
     \ }
+if executable('rg')
+    set grepprg=rg\ --color=never
+    let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
+    let g:ctrlp_use_caching = 0
+endif
 
 """EasyMotion
 let g:EasyMotion_do_mapping = 0 " Disable default mappings
@@ -166,6 +183,34 @@ let g:lightline = {
 let g:flake8_show_in_file=1
 
 """completer.vim
-let g:completor_min_chars=2
+let g:completor_min_chars=1
 " map right arrow to enter
-inoremap <expr> <right> pumvisible() ? "<Enter>" : "<right>"
+inoremap <expr> <right> pumvisible() ? "\<c-y>" : "\<right>"
+noremap <silent> <leader>c :call completor#do('doc')<CR>
+let g:completor_filetype_map = {
+      \ 'go':   {'ft': 'lsp', 'cmd': 'gopls'},
+      \ 'rust': {'ft': 'lsp', 'cmd': 'rls'},
+      \ }
+let g:completor_completion_delay=60  " ms
+let g:completor_blacklist = ['tagbar', 'qf', 'netrw', 'unite', 'vimwiki', 'sql']
+
+"""ale
+let g:ale_linters = {
+      \ 'rust': ['rls'],
+      \ 'sql': [],
+      \ }
+"let g:ale_rust_cargo_use_clippy = executable('cargo-clippy')
+let g:ale_rust_rls_config = {
+      \   'rust': {
+      \     'clippy_preference': 'opt-in'
+      \   }
+      \ }
+
+
+"""FZF
+let g:fzf_action = {
+  \ 'ctrl-m': 'tab split',
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-x': 'split',
+  \ 'ctrl-v': 'vsplit' }
+nnoremap <leader>ff :Files<CR>
